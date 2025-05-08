@@ -5,6 +5,12 @@ body {
     padding: 0;
 }
 
+html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 .navbar {
     background: #005ea2;
     color: white;
@@ -34,10 +40,25 @@ body {
 }
 
 .footer {
-    background: #ddd;
+    background: #005ea2;
+    color: white;
     text-align: center;
-    padding: 10px;
-    position: fixed;
+    padding: 15px 20px;
+    margin-top: auto;
+    position: relative;
     width: 100%;
-    bottom: 0;
+}
+
+.card {
+	border-radius: 15px;
+	margin-bottom: 1rem;
+}
+
+.card-header.bg-match {
+	background-color: #005e9c !important;
+	color: white;
+}
+
+.container {
+	flex: 1;
 }
