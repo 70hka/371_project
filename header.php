@@ -22,6 +22,11 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <?php else: ?>
                     <a href="InstructorSchedule.php" class="btn btn-outline-light">Schedule Appointment</a>
                 <?php endif; ?>
+                <?php if ($currentPage === 'groupeditor.php'): ?>
+                    <a href="instructordash.php" class="btn btn-outline-light">Return to Dashboard</a>
+                <?php else: ?>
+                    <a href="groupeditor.php" class="btn btn-outline-light">Edit Groups</a>
+                <?php endif; ?>
             <?php endif; ?>
         <?php endif; ?>
         <a href="logout.php" class="btn btn-light">Logout</a>

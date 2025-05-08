@@ -6,7 +6,11 @@
             <?php if ($_SESSION['role'] === 'student'): ?>
                 <a class="text-white text-decoration-none" href="studentdash.php">My Dashboard</a>
             <?php elseif ($_SESSION['role'] === 'instructor'): ?>
-                <a class="text-white text-decoration-none" href="InstructorSchedule.php">Schedule Appointment</a>
+                <?php if (basename($_SERVER['PHP_SELF']) === 'groupeditor.php'): ?>
+                    <a class="text-white text-decoration-none" href="instructordash.php">Return to Dashboard</a>
+                <?php else: ?>
+                    <a class="text-white text-decoration-none" href="groupeditor.php">Edit Groups</a>
+                <?php endif; ?>
             <?php endif; ?>
         <?php endif; ?>
     </div>
