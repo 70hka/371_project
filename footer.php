@@ -8,7 +8,12 @@
             <?php elseif ($_SESSION['role'] === 'instructor'): ?>
                 <?php if (basename($_SERVER['PHP_SELF']) === 'groupeditor.php'): ?>
                     <a class="text-white text-decoration-none" href="instructordash.php">Return to Dashboard</a>
+					<a class="text-white text-decoration-none" href="InstructorSchedule.php">Schedule Appointments</a>
+				<?php elseif (basename($_SERVER['PHP_SELF']) === 'InstructorSchedule.php'): ?>
+					<a class="text-white text-decoration-none" href="instructordash.php">Return to Dashboard</a>
+					<a class="text-white text-decoration-none" href="groupeditor.php">Edit Groups</a>
                 <?php else: ?>
+					<a class="text-white text-decoration-none" href="InstructorSchedule.php">Schedule Appointments</a>
                     <a class="text-white text-decoration-none" href="groupeditor.php">Edit Groups</a>
                 <?php endif; ?>
             <?php endif; ?>

@@ -14,7 +14,8 @@ if ($selectedDate) {
 			sg.group_name, 
 			ia.available_date, 
 			ia.available_time, 
-			sg.group_id
+			sg.group_id,
+			sg.leader_id
 		FROM Appointments a
 		JOIN InstructorAvailability ia ON a.availability_id = ia.availability_id
 		JOIN StudentGroup sg ON a.group_id = sg.group_id
@@ -29,7 +30,8 @@ if ($selectedDate) {
 			sg.group_name, 
 			ia.available_date, 
 			ia.available_time, 
-			sg.group_id
+			sg.group_id,
+			sg.leader_id
 		FROM Appointments a
 		JOIN InstructorAvailability ia ON a.availability_id = ia.availability_id
 		JOIN StudentGroup sg ON a.group_id = sg.group_id
@@ -100,7 +102,7 @@ $availableSlots = $availStmt->get_result();
 						<?php
 						$groupId = $row['group_id'];
 						$memStmt = $conn->prepare("
-							SELECT u.username 
+							SELECT u.user_id, u.username 
 							FROM StudentGroupMembers gm 
 							JOIN Users u ON gm.user_id = u.user_id 
 							WHERE gm.group_id = ?
@@ -113,7 +115,9 @@ $availableSlots = $availStmt->get_result();
 							<?php 
 							$memList = [];
 							while ($mem = $members->fetch_assoc()) {
-								$memList[] = htmlspecialchars($mem['username']);
+								$isLeader = ($mem['user_id'] == $row['leader_id']);
+								$name = htmlspecialchars($mem['username']);
+								$memList[] = $isLeader ? "<strong class='text-primary'>$name</strong>" : $name;
 							}
 							echo implode(', ', $memList) ?: '<em>None</em>';
 							?>

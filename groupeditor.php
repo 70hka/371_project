@@ -40,6 +40,59 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_leader'])) {
     exit;
 }
 
+// Add a member to a group
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_member'])) {
+    $group_id = intval($_POST['group_id']);
+    $user_id = intval($_POST['new_member_id']);
+
+    // Prevent duplicate entry in the same group
+    $stmt = $conn->prepare("SELECT 1 FROM StudentGroupMembers WHERE group_id = ? AND user_id = ?");
+    $stmt->bind_param("ii", $group_id, $user_id);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows === 0) {
+        $stmt->close();
+        $stmt = $conn->prepare("INSERT INTO StudentGroupMembers (group_id, user_id) VALUES (?, ?)");
+        $stmt->bind_param("ii", $group_id, $user_id);
+        $stmt->execute();
+        $stmt->close();
+    } else {
+        $stmt->close();
+    }
+
+    header("Location: groupeditor.php");
+    exit;
+}
+
+
+// Remove a member from a group
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['remove_member'])) {
+    $group_id = intval($_POST['group_id']);
+    $user_id = intval($_POST['user_id']);
+
+    // Prevent removing the leader
+    $stmt = $conn->prepare("SELECT leader_id FROM StudentGroup WHERE group_id = ?");
+    $stmt->bind_param("i", $group_id);
+    $stmt->execute();
+    $stmt->bind_result($leader_id);
+    $stmt->fetch();
+    $stmt->close();
+
+    if ($leader_id == $user_id) {
+        header("Location: groupeditor.php?error=cannot_remove_leader");
+        exit;
+    }
+
+    $stmt = $conn->prepare("DELETE FROM StudentGroupMembers WHERE group_id = ? AND user_id = ?");
+    $stmt->bind_param("ii", $group_id, $user_id);
+    $stmt->execute();
+    $stmt->close();
+
+    header("Location: groupeditor.php?removed=1");
+    exit;
+}
+
 // Search for groups by name or member
 if ($search) {
     $stmt = $conn->prepare("
@@ -93,29 +146,19 @@ if ($search) {
     $stmt->close();
 }
 
-
-// Add a member to a group
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_member'])) {
+// Rename group
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_name'])) {
     $group_id = intval($_POST['group_id']);
-    $user_id = intval($_POST['new_member_id']);
+    $new_name = trim($_POST['group_name']);
 
-    // Prevent duplicate entry in the same group
-    $stmt = $conn->prepare("SELECT 1 FROM StudentGroupMembers WHERE group_id = ? AND user_id = ?");
-    $stmt->bind_param("ii", $group_id, $user_id);
-    $stmt->execute();
-    $stmt->store_result();
-
-    if ($stmt->num_rows === 0) {
-        $stmt->close();
-        $stmt = $conn->prepare("INSERT INTO StudentGroupMembers (group_id, user_id) VALUES (?, ?)");
-        $stmt->bind_param("ii", $group_id, $user_id);
+    if ($new_name !== '') {
+        $stmt = $conn->prepare("UPDATE StudentGroup SET group_name = ? WHERE group_id = ?");
+        $stmt->bind_param("si", $new_name, $group_id);
         $stmt->execute();
-        $stmt->close();
-    } else {
         $stmt->close();
     }
 
-    header("Location: groupeditor.php");
+    header("Location: groupeditor.php?renamed=1");
     exit;
 }
 
