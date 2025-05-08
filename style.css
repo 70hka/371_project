@@ -41,3 +41,13 @@ body {
     width: 100%;
     bottom: 0;
 }
+
+.card {
+	border-radius: 15px;
+	margin-bottom: 1rem;
+}
+
+.card-header.bg-match {
+	background-color: #005e9c !important;
+	color: white;
+}
